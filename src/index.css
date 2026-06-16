@@ -38,15 +38,51 @@ textarea {
 
 .portal-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px 20px;
   margin: 0 0 18px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   border: 1px solid rgba(30, 64, 175, 0.2);
   border-radius: 18px;
-  padding: 16px 18px;
+  padding: 14px 18px 16px;
   background:
-    linear-gradient(135deg, rgba(30, 64, 175, 0.98), rgba(17, 24, 39, 0.92));
+    linear-gradient(
+      90deg,
+      rgba(142, 75, 0, 0.74) 0%,
+      rgba(201, 112, 18, 0.56) 15%,
+      rgba(245, 247, 252, 0.72) 34%,
+      rgba(214, 224, 246, 0.6) 50%,
+      rgba(10, 54, 122, 0.5) 62%,
+      rgba(14, 109, 27, 0.54) 100%
+    ),
+    linear-gradient(135deg, rgba(18, 40, 98, 0.94), rgba(8, 22, 59, 0.96));
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.2);
+}
+
+.portal-header::before,
+.portal-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.portal-header::before {
+  background:
+    linear-gradient(110deg, rgba(142, 75, 0, 0.38) 0%, rgba(201, 112, 18, 0.18) 18%, transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05) 38%, transparent 68%),
+    linear-gradient(250deg, rgba(14, 109, 27, 0.26) 0%, rgba(19, 136, 8, 0.12) 24%, transparent 42%),
+    linear-gradient(145deg, rgba(10, 54, 122, 0.32), transparent 32%);
+  filter: blur(8px);
+  opacity: 0.9;
+}
+
+.portal-header::after {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent 16%, transparent 84%, rgba(255, 255, 255, 0.06));
+  opacity: 0.9;
 }
 
 .portal-header__emblem {
@@ -71,10 +107,18 @@ textarea {
 .portal-header__copy {
   display: flex;
   flex: 1 1 auto;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
   min-width: 0;
+  padding-top: 2px;
+}
+
+.portal-header__emblem,
+.portal-header__copy,
+.portal-header__nav-slot {
+  position: relative;
+  z-index: 1;
 }
 
 .portal-header__brand {
@@ -93,6 +137,11 @@ textarea {
   font-weight: 500;
   line-height: 1.4;
   letter-spacing: 0;
+}
+
+.portal-header__nav-slot {
+  flex: 1 1 280px;
+  min-height: 1px;
 }
 
 .card {
@@ -479,6 +528,10 @@ textarea {
 
   .portal-header__copy {
     align-items: flex-start;
+  }
+
+  .portal-header__nav-slot {
+    display: none;
   }
 
   .form-grid--two,

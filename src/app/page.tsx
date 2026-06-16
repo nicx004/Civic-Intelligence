@@ -17,6 +17,8 @@ export default function HomePage() {
             Official complaint intake for municipal services
           </p>
         </div>
+
+        <div className="portal-header__nav-slot" aria-hidden="true" />
       </section>
 
       <ComplaintForm />
