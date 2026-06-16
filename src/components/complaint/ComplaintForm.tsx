@@ -31,6 +31,12 @@ export function ComplaintForm() {
   const [selectedPhotoName, setSelectedPhotoName] = useState<string>("");
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [acknowledgementId, setAcknowledgementId] = useState<string>("");
+  const [isLocatingWard, setIsLocatingWard] = useState(false);
+  const [capturedCoordinates, setCapturedCoordinates] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+  const [locationStatus, setLocationStatus] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const {
@@ -66,6 +72,7 @@ export function ComplaintForm() {
     console.log("Mock complaint submission", {
       category: values.category,
       ward: values.ward,
+      capturedCoordinates,
       locality: values.locality,
       landmark: values.landmark,
       phone: values.phone,
@@ -78,6 +85,42 @@ export function ComplaintForm() {
     setSelectedPhotoName("");
     setAcknowledgementId(acknowledgement);
     setHasSubmitted(true);
+  }
+
+  function handleWardLocationLookup() {
+    setHasSubmitted(false);
+
+    if (!navigator.geolocation) {
+      setLocationStatus("GPS lookup is not available in this browser.");
+      return;
+    }
+
+    setIsLocatingWard(true);
+    setLocationStatus("Requesting permission to detect the complaint location...");
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const nextCoordinates = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        };
+
+        setCapturedCoordinates(nextCoordinates);
+        setLocationStatus(
+          `Location captured at ${nextCoordinates.latitude.toFixed(5)}, ${nextCoordinates.longitude.toFixed(5)}. The ward can now be resolved from GPS data.`,
+        );
+        setIsLocatingWard(false);
+      },
+      () => {
+        setLocationStatus("Location permission was denied or the lookup failed.");
+        setIsLocatingWard(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    );
   }
 
   return (
@@ -144,22 +187,45 @@ export function ComplaintForm() {
 
               <div className="space-y-2">
                 <Label htmlFor="ward">Ward number / zone</Label>
-                <Input
-                  id="ward"
-                  placeholder="Example: Ward 84 or Zone 3"
-                  aria-invalid={errors.ward ? "true" : "false"}
-                  onInput={() => setHasSubmitted(false)}
-                  {...register("ward", {
-                    required: "Enter the ward or zone.",
-                    minLength: {
-                      value: 2,
-                      message: "Please add a ward or zone reference.",
-                    },
-                  })}
-                />
+                <div className="field-with-action">
+                  <Input
+                    id="ward"
+                    placeholder="Example: Ward 84 or Zone 3"
+                    aria-invalid={errors.ward ? "true" : "false"
+                    }
+                    className="field-with-action__input"
+                    onInput={() => setHasSubmitted(false)}
+                    {...register("ward", {
+                      required: "Enter the ward or zone.",
+                      minLength: {
+                        value: 2,
+                        message: "Please add a ward or zone reference.",
+                      },
+                    })}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="field-with-action__button"
+                    onClick={handleWardLocationLookup}
+                    aria-label="Detect location using GPS"
+                  >
+                    <MapPin className="h-4 w-4" aria-hidden="true" />
+                  </Button>
+                </div>
                 {errors.ward ? (
                   <p className="text-sm text-destructive">
                     {errors.ward.message}
+                  </p>
+                ) : (
+                  <p className="field-hint">
+                    Tap the GPS icon if you do not know the ward or zone.
+                  </p>
+                )}
+                {locationStatus ? (
+                  <p className="field-hint field-hint--location">
+                    {isLocatingWard ? "Detecting location... " : null}
+                    {locationStatus}
                   </p>
                 ) : null}
               </div>

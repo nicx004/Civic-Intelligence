@@ -27,6 +27,7 @@ Input:
 - Complaint Text
 - Photo (Optional)
 - GPS Location (Optional)
+- Ward / Zone (Optional if GPS is captured)
 
 Example:
 
@@ -45,6 +46,7 @@ Checks:
 - Location Available?
 - Issue Described?
 - Supporting Evidence Available?
+- If ward is unknown, can GPS be used to resolve the complaint location?
 
 Output:
 
@@ -97,6 +99,13 @@ Traffic Congestion → Traffic
 Location:
 
 Whitefield Metro Station
+
+If the citizen does not know the ward or zone:
+
+- They tap the GPS icon inside the ward / zone field
+- The browser requests location permission
+- The app captures coordinates for the complaint site
+- The backend or routing service reverse-geocodes the coordinates into the correct ward / zone
 
 ↓
 
