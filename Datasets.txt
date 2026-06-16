@@ -1,0 +1,68 @@
+# Datasets
+
+## Dataset Categories
+
+### Complaint Datasets
+
+Purpose:
+
+- Training
+- Evaluation
+- Taxonomy Creation
+
+Sources:
+
+- Chandigarh Civic Issues Dataset
+- BBMP Complaint Data
+- OpenCity Datasets
+
+---
+
+### Jurisdiction Datasets
+
+Purpose:
+
+Location → Ward Mapping
+
+Data Required:
+
+- Wards
+- Zones
+- Departments
+- Officers
+
+---
+
+### Policy Datasets
+
+Purpose:
+
+RAG Knowledge Base
+
+Examples:
+
+- Citizen Charters
+- Municipal Policies
+- Disaster Management Guidelines
+- Service Level Agreements
+
+---
+
+## Evaluation Dataset
+
+Target:
+
+100-300 manually annotated complaints.
+
+Example:
+
+{
+  "complaint":
+  "Road flooded and streetlights not working",
+
+  "expected_departments":
+  [
+    "Drainage",
+    "Electrical"
+  ]
+}

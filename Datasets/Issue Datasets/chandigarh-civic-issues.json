@@ -1,0 +1,334 @@
+[
+    {
+        "reportID": "23/05/2024/116925",
+        "department": "Health And Sanitation",
+        "wardName": "Sector-33",
+        "reportingMode": "web",
+        "category": "Littering",
+        "comments": "Dry leaves in front of my house gate House No 323 Sector 33A.No one can collect these leaves from past 15-20 days",
+        "address": "323 Sector-33A SECTOR-33 ",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-23T13:56:42+05:30",
+        "resolutionStatus": "closed",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.71831510615646,
+                76.77369149206544
+            ]
+        }
+    },
+    {
+        "reportID": "23/05/2024/116930",
+        "department": "Health And Sanitation",
+        "wardName": "Sector-8",
+        "reportingMode": "web",
+        "category": "RemovalOfDeadAnimals",
+        "comments": "A dead body of puppy is lying in back side of kothi 156. Please arrange to remove it.",
+        "address": "Back side of Kothi 156 SECTOR-8 Sector 8A",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-23T05:59:38+05:30",
+        "resolutionStatus": "resolved, Resolved",
+        "location": null
+    },
+    {
+        "reportID": "23/05/2024/116931",
+        "department": "Enforcement",
+        "wardName": "Sector-31",
+        "reportingMode": "mobileapp",
+        "category": "Encroachment",
+        "comments": "A temporary parking shed made on road which cause public nuisances and also ruined the beauty of city. ",
+        "address": "In front of H. No-740, Alok raj road SECTOR-31 H No. 740",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-23T03:55:06+05:30",
+        "resolutionStatus": "assigned",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.706251743750112,
+                76.78453369347143
+            ]
+        }
+    },
+    {
+        "reportID": "23/05/2024/116937",
+        "department": "Horticulture",
+        "wardName": "Sector-7",
+        "reportingMode": "web",
+        "category": "Horticulture",
+        "comments": "Need urgent pruning of tree it can damage car",
+        "address": "House number 915 sector 7B SECTOR-7 Near sampark centre",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-24T03:05:36+05:30",
+        "resolutionStatus": "resolved, Needful done ",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.735378105708143,
+                76.8024781693116
+            ]
+        }
+    },
+    {
+        "reportID": "23/05/2024/116938",
+        "department": "Electrical",
+        "wardName": "Sector-40",
+        "reportingMode": "mobileapp",
+        "category": "StreetLight",
+        "comments": null,
+        "address": "471 sec 40 A SECTOR-40 ",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-23T06:43:57+05:30",
+        "resolutionStatus": "resolved, Attended ",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.743684,
+                76.736357
+            ]
+        }
+    },
+    {
+        "reportID": "23/05/2024/116941",
+        "department": "Health And Sanitation",
+        "wardName": "Sector-41",
+        "reportingMode": null,
+        "category": "DoorToDoorGarbageCollection",
+        "comments": "garbage not collected ",
+        "address": "H no 1402 sector-41b SECTOR-41 ",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-23T08:56:52+05:30",
+        "resolutionStatus": "resolved, Resolved ",
+        "location": null
+    },
+    {
+        "reportID": "23/05/2024/116948",
+        "department": "Horticulture",
+        "wardName": "Sector-44",
+        "reportingMode": "mobileapp",
+        "category": "Horticulture",
+        "comments": "dead leaves and trees are on path",
+        "address": "3095, Sector 44D SECTOR-44 inside corner",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-24T03:58:55+05:30",
+        "resolutionStatus": "rejected, Out of operational scope;Relates to MOH ",
+        "location": null
+    },
+    {
+        "reportID": "23/05/2024/116939",
+        "department": "Water Supply And Sewerage",
+        "wardName": "Sector-7",
+        "reportingMode": "web",
+        "category": "WaterSupply",
+        "comments": null,
+        "address": "1554 sector 7c SECTOR-7 near market",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-23T14:41:35+05:30",
+        "resolutionStatus": "resolved, Resolved ",
+        "location": null
+    },
+    {
+        "reportID": "23/05/2024/116940",
+        "department": "Health And Sanitation",
+        "wardName": "Sector-35",
+        "reportingMode": "mobileapp",
+        "category": "Sanitation",
+        "comments": "I have been calling supervisor for several months that Get this pile of garbage removed from in front of my house 1150 35B but the lice dont crawl on his ears Otherwise get a BOARD INSTALLED HERE to THROW the GARBAGE HERE\n\n",
+        "address": "1150 35 B SECTOR-35 BACK SIDE J W MARRIOTT HOTEL ",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-24T02:10:01+05:30",
+        "resolutionStatus": "resolved, Done",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.727293,
+                76.765513
+            ]
+        }
+    },
+    {
+        "reportID": "23/05/2024/116943",
+        "department": "Water Supply And Sewerage",
+        "wardName": "Sector-21A",
+        "reportingMode": "mobileapp",
+        "category": "TertiaryWater",
+        "comments": "No water since morning ",
+        "address": "336 sector 21 A Chandigarh  SECTOR-21A Sector 21 A ",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-23T10:03:57+05:30",
+        "resolutionStatus": "resolved, Resolved successfully ",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.731378,
+                76.780274
+            ]
+        }
+    },
+    {
+        "reportID": "23/05/2024/116966",
+        "department": "Enforcement",
+        "wardName": "Sector-37",
+        "reportingMode": "mobileapp",
+        "category": "Advertisement2",
+        "comments": "Sector 37D V4 Road ",
+        "address": " SECTOR-37 ",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-23T13:13:17+05:30",
+        "resolutionStatus": "assigned",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.740943742762234,
+                76.74843522345259
+            ]
+        }
+    },
+    {
+        "reportID": "23/05/2024/116967",
+        "department": "Enforcement",
+        "wardName": "Sector-35",
+        "reportingMode": "mobileapp",
+        "category": "Encroachment",
+        "comments": "Sector 35B Himalaya Marg ",
+        "address": " SECTOR-35 ",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-23T13:18:49+05:30",
+        "resolutionStatus": "assigned",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.724626277279086,
+                76.76554594759506
+            ]
+        }
+    },
+    {
+        "reportID": "23/05/2024/116969",
+        "department": "Water Supply And Sewerage",
+        "wardName": "Sector-7",
+        "reportingMode": "mobileapp",
+        "category": "WaterSupply",
+        "comments": "Pls provide water tanker as their no supply is coming ",
+        "address": "1913 SECTOR-7 Backside market",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-23T13:28:48+05:30",
+        "resolutionStatus": "rejected, Out of operational scope;Relates to CPWD Internal Mtc ",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.73248606711798,
+                76.80284975985623
+            ]
+        }
+    },
+    {
+        "reportID": "23/05/2024/116971",
+        "department": "Health And Sanitation",
+        "wardName": "Sector-33",
+        "reportingMode": "web",
+        "category": "Sanitation",
+        "comments": "Dry leaves not being removed",
+        "address": "House no 202, sector 33 A SECTOR-33 Near Bedi hospital",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-24T03:21:27+05:30",
+        "resolutionStatus": "resolved, Done",
+        "location": null
+    },
+    {
+        "reportID": "23/05/2024/116979",
+        "department": "Water Supply And Sewerage",
+        "wardName": "Sector-38-WEST",
+        "reportingMode": "mobileapp",
+        "category": "Metering",
+        "comments": null,
+        "address": "5504, sector 38 west. Chandigarh  SECTOR-38-WEST ",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-24T04:30:21+05:30",
+        "resolutionStatus": "resolved, Please Apply Online for Change of Defective Meter through portal egov.chandigarhsmartcity.in for further assistance pls call 01722787200",
+        "location": null
+    },
+    {
+        "reportID": "23/05/2024/116985",
+        "department": "Water Supply And Sewerage",
+        "wardName": "Sector-8",
+        "reportingMode": "mobileapp",
+        "category": "WaterSupply",
+        "comments": "Supply with low pressure not able to reach even first floor",
+        "address": "1116 sector 8c chandigarh  SECTOR-8 Opposite Gurudwara sahib ",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-23T17:19:57+05:30",
+        "resolutionStatus": "resolved, Water supply is as per pressure released from water works ",
+        "location": null
+    },
+    {
+        "reportID": "23/05/2024/116990",
+        "department": "Water Supply And Sewerage",
+        "wardName": "Sector-7",
+        "reportingMode": "mobileapp",
+        "category": "WaterSupply",
+        "comments": "No water available ",
+        "address": "1913 SECTOR-7 ",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-23T17:18:57+05:30",
+        "resolutionStatus": "rejected, Out of operational scope;Relates to CPWD Internal Mtc ",
+        "location": null
+    },
+    {
+        "reportID": "23/05/2024/116994",
+        "department": "Health And Sanitation",
+        "wardName": "Sector-31",
+        "reportingMode": "mobileapp",
+        "category": "Sanitation",
+        "comments": "Dry leaves is not picking up",
+        "address": "3279A SECTOR-31 Sector 31D behind the jagnath temple ",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-24T04:43:45+05:30",
+        "resolutionStatus": "resolved, Done",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.703155,
+                76.775593
+            ]
+        }
+    },
+    {
+        "reportID": "24/05/2024/117003",
+        "department": "Health And Sanitation",
+        "wardName": "Sector-34",
+        "reportingMode": "mobileapp",
+        "category": "DoorToDoorGarbageCollection",
+        "comments": "Garbage not picked today despite no holiday",
+        "address": "House no 1868,sector 34-D SECTOR-34 Behind prasar bharti",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-24T03:48:17+05:30",
+        "resolutionStatus": "resolved, Done",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.720997,
+                76.761531
+            ]
+        }
+    },
+    {
+        "reportID": "24/05/2024/117005",
+        "department": "Electrical",
+        "wardName": "Sector-46",
+        "reportingMode": "web",
+        "category": "StreetLight",
+        "comments": "Park lights remain on beyond 7. a.m. \nswitch off at 6.a.m.",
+        "address": " SECTOR-46 Community Centre",
+        "mediaURL": null,
+        "observationDateTime": "2024-05-24T04:24:55+05:30",
+        "resolutionStatus": "resolved, Will attend",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.704067825115587,
+                76.76694287039207
+            ]
+        }
+    }
+]
