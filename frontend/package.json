@@ -9,11 +9,13 @@
     "start": "next start -H 127.0.0.1"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.3.1",
     "lucide-react": "latest",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-hook-form": "latest",
+    "tailwindcss": "^4.3.1",
     "typescript": "latest"
   },
   "devDependencies": {
