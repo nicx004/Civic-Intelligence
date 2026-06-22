@@ -41,37 +41,42 @@ model User {
   updatedAt     DateTime  @updatedAt
 }
 
-model Category {
-  id          String    @id @default(cuid())
-  name        String    @unique
-  description String?
-
-  reports     Report[]
+enum Category {
+  ROADS
+  WATER_SUPPLY
+  SEWAGE
+  GARBAGE
+  STREET_LIGHTING
+  TRAFFIC
+  ILLEGAL_CONSTRUCTION
+  PARKS
+  STRAY_ANIMALS
+  PUBLIC_SAFETY
+  OTHER
 }
 
 model Report {
-  id            String        @id @default(cuid())
+  id          String        @id @default(cuid())
 
-  title         String
-  description   String
+  title       String
+  description String
 
-  latitude      Float
-  longitude     Float
+  latitude    Float
+  longitude   Float
 
-  status        ReportStatus  @default(PENDING)
+  status      ReportStatus  @default(PENDING)
 
-  userId        String
-  categoryId    String
+  userId      String
+  category    Category
 
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category      Category      @relation(fields: [categoryId], references: [id])
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  images        ReportImage[]
-  comments      Comment[]
-  votes         Vote[]
+  images      ReportImage[]
+  comments    Comment[]
+  votes       Vote[]
 
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 model ReportImage {
