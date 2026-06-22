@@ -20,28 +20,28 @@ enum ReportStatus {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id String @id @default(cuid())
 
   name          String?
   email         String    @unique
   emailVerified DateTime?
   image         String?
 
-  password      String?
-  role          UserRole  @default(USER)
+  password String?
+  role     UserRole @default(USER)
 
-  reports       Report[]
-  comments      Comment[]
-  votes         Vote[]
+  reports  Report[]
+  comments Comment[]
+  votes    Vote[]
 
-  accounts      Account[]
-  sessions      Session[]
+  accounts Account[]
+  sessions Session[]
 
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-enum Category {
+enum ReportCategory {
   ROADS
   WATER_SUPPLY
   SEWAGE
@@ -56,78 +56,78 @@ enum Category {
 }
 
 model Report {
-  id          String        @id @default(cuid())
+  id String @id @default(cuid())
 
   title       String
   description String
 
-  latitude    Float
-  longitude   Float
+  latitude  Float
+  longitude Float
 
-  status      ReportStatus  @default(PENDING)
+  status ReportStatus @default(PENDING)
 
-  userId      String
-  category    Category
+  userId   String
+  category ReportCategory
 
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  images      ReportImage[]
-  comments    Comment[]
-  votes       Vote[]
+  images   ReportImage[]
+  comments Comment[]
+  votes    Vote[]
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ReportImage {
-  id          String   @id @default(cuid())
-  url         String
+  id  String @id @default(cuid())
+  url String
 
-  reportId    String
-  report      Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  reportId String
+  report   Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
 }
 
 model Vote {
-  id          String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  userId      String
-  reportId    String
+  userId   String
+  reportId String
 
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  report      Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@unique([userId, reportId])
 }
 
 model Comment {
-  id          String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  content     String
+  content String
 
-  userId      String
-  reportId    String
+  userId   String
+  reportId String
 
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  report      Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Account {
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
