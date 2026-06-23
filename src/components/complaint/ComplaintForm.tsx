@@ -16,9 +16,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+// Backend integration: use the shared Prisma-enum-backed category options.
+import { CATEGORIES } from "@/constants/categories";
+
+type ReportCategoryValue = (typeof CATEGORIES)[number]["value"];
+
+// Backend integration: the API returns the created report; its real ID is used
+// by the existing success screen as the complaint reference number.
+type CreatedReport = {
+  id: string;
+};
 
 type ComplaintFormValues = {
-  category: string;
+  category: ReportCategoryValue;
   ward: string;
   locality: string;
   landmark: string;
@@ -30,7 +40,9 @@ type ComplaintFormValues = {
 export function ComplaintForm() {
   const [selectedPhotoName, setSelectedPhotoName] = useState<string>("");
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [acknowledgementId, setAcknowledgementId] = useState<string>("");
+  // Backend integration: retain the returned report instead of creating a fake ID.
+  const [createdReport, setCreatedReport] = useState<CreatedReport | null>(null);
+  const [submissionError, setSubmissionError] = useState<string>("");
   const [isLocatingWard, setIsLocatingWard] = useState(false);
   const [capturedCoordinates, setCapturedCoordinates] = useState<{
     latitude: number;
@@ -46,7 +58,8 @@ export function ComplaintForm() {
     formState: { errors, isSubmitting },
   } = useForm<ComplaintFormValues>({
     defaultValues: {
-      category: "",
+      // The empty value keeps the existing dropdown placeholder and validation UX.
+      category: "" as ReportCategoryValue,
       ward: "",
       locality: "",
       landmark: "",
@@ -65,26 +78,52 @@ export function ComplaintForm() {
   });
 
   async function onSubmit(values: ComplaintFormValues) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    setSubmissionError("");
 
-    const acknowledgement = `CI-${Math.floor(100000 + Math.random() * 900000)}`;
+    // Backend integration: coordinates are required by POST /api/reports.
+    if (!capturedCoordinates) {
+      setLocationStatus("Detect the complaint location before submitting.");
+      return;
+    }
 
-    console.log("Mock complaint submission", {
-      category: values.category,
-      ward: values.ward,
-      capturedCoordinates,
-      locality: values.locality,
-      landmark: values.landmark,
-      phone: values.phone,
-      complaint: values.complaint,
-      photoName: values.photo?.[0]?.name ?? null,
-      acknowledgement,
-    });
+    try {
+      // Backend integration: replace the prototype delay/logging with the real API call.
+      const response = await fetch("/api/reports", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+        title: values.complaint.substring(0, 80),
+        description: values.complaint,
 
-    reset();
-    setSelectedPhotoName("");
-    setAcknowledgementId(acknowledgement);
-    setHasSubmitted(true);
+        category: values.category,
+
+        ward: values.ward,
+        locality: values.locality,
+        landmark: values.landmark,
+        phone: values.phone || null,
+
+        latitude: capturedCoordinates.latitude,
+        longitude: capturedCoordinates.longitude,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("The complaint could not be submitted.");
+      }
+
+      // Backend integration: keep the report returned by the backend.
+      const report = (await response.json()) as CreatedReport;
+
+      reset();
+      setSelectedPhotoName("");
+      setCreatedReport(report);
+      setHasSubmitted(true);
+    } catch {
+      // Backend integration: preserve entered form values when submission fails.
+      setSubmissionError("Unable to submit the complaint. Please try again.");
+    }
   }
 
   function handleWardLocationLookup() {
@@ -170,13 +209,12 @@ export function ComplaintForm() {
                   }}
                 >
                   <option value="">Select issue type</option>
-                  <option value="roads">Roads and potholes</option>
-                  <option value="sanitation">Sanitation and waste</option>
-                  <option value="streetlights">Streetlights</option>
-                  <option value="water">Water supply</option>
-                  <option value="drainage">Drainage and flooding</option>
-                  <option value="public-safety">Public safety</option>
-                  <option value="other">Other civic issue</option>
+                  {/* Backend integration: values now match the Prisma enum exactly. */}
+                  {CATEGORIES.map((category) => (
+                    <option key={category.value} value={category.value}>
+                      {category.label}
+                    </option>
+                  ))}
                 </select>
                 {errors.category ? (
                   <p className="text-sm text-destructive">
@@ -374,7 +412,8 @@ export function ComplaintForm() {
           <div className="info-strip">
             <div>
               <FileCheck2 className="h-4 w-4" aria-hidden="true" />
-              <span>Submission is stored locally in this prototype.</span>
+              {/* Backend integration: the complaint is now persisted by the API. */}
+              <span>Submission is securely stored for municipal review.</span>
             </div>
             <div>
               <MapPin className="h-4 w-4" aria-hidden="true" />
@@ -386,13 +425,21 @@ export function ComplaintForm() {
             <div className="submission-confirmation" role="status">
               <strong>Complaint submitted successfully.</strong>
               <p>
-                Reference number: <span>{acknowledgementId}</span>
+                {/* Backend integration: display the real report ID returned by the API. */}
+                Reference number: <span>{createdReport?.id}</span>
               </p>
               <p>
-                This is a front-end prototype. Backend submission and state sync
-                are not connected yet.
+                Your complaint has been recorded and is ready for municipal
+                review.
               </p>
             </div>
+          ) : null}
+
+          {/* Backend integration: show request failures without clearing the form. */}
+          {submissionError ? (
+            <p className="text-sm text-destructive" role="alert">
+              {submissionError}
+            </p>
           ) : null}
         </CardContent>
 

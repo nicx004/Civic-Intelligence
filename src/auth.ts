@@ -3,9 +3,6 @@ import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 
-console.log("Google ID:", process.env.AUTH_GOOGLE_ID);
-console.log("Google Secret exists:", !!process.env.AUTH_GOOGLE_SECRET);
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
 
@@ -18,6 +15,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   session: {
     strategy: "database",
+  },
+
+  callbacks: {
+    async session({ session, user }) {
+      if (session.user) {
+        session.user.id = user.id;
+        session.user.role = user.role;
+      }
+
+      return session;
+    },
   },
 
   secret: process.env.AUTH_SECRET,

@@ -61,15 +61,19 @@ model Report {
   title       String
   description String
 
+  category ReportCategory
+  status   ReportStatus @default(PENDING)
+
+  ward      String
+  locality  String
+  landmark  String
+  phone     String?
+
   latitude  Float
   longitude Float
 
-  status ReportStatus @default(PENDING)
-
-  userId   String
-  category ReportCategory
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   images   ReportImage[]
   comments Comment[]
