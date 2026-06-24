@@ -76,55 +76,52 @@ export function ComplaintForm() {
   } = register("category", {
     required: "Select a complaint category.",
   });
+  
+  
+async function onSubmit(values: ComplaintFormValues) {
 
-  async function onSubmit(values: ComplaintFormValues) {
-    setSubmissionError("");
+  setSubmissionError("");
 
-    // Backend integration: coordinates are required by POST /api/reports.
-    if (!capturedCoordinates) {
-      setLocationStatus("Detect the complaint location before submitting.");
-      return;
-    }
+  try {
 
-    try {
-      // Backend integration: replace the prototype delay/logging with the real API call.
-      const response = await fetch("/api/reports", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+    const response = await fetch("/api/reports", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         title: values.complaint.substring(0, 80),
         description: values.complaint,
 
         category: values.category,
-
         ward: values.ward,
         locality: values.locality,
         landmark: values.landmark,
         phone: values.phone || null,
 
-        latitude: capturedCoordinates.latitude,
-        longitude: capturedCoordinates.longitude,
-        }),
-      });
+        latitude: capturedCoordinates?.latitude ?? 0,
+        longitude: capturedCoordinates?.longitude ?? 0,
+      }),
+    });
 
-      if (!response.ok) {
-        throw new Error("The complaint could not be submitted.");
-      }
+
+    if (!response.ok) {
+      throw new Error("The complaint could not be submitted.");
+    }
+
+    const report = (await response.json()) as CreatedReport;
+
+    reset();
+    setSelectedPhotoName("");
+    setCreatedReport(report);
+    setHasSubmitted(true);
+  } catch (error) {
+    console.error(error);
+    setSubmissionError("Unable to submit the complaint. Please try again.");
+  }
+}
 
       // Backend integration: keep the report returned by the backend.
-      const report = (await response.json()) as CreatedReport;
-
-      reset();
-      setSelectedPhotoName("");
-      setCreatedReport(report);
-      setHasSubmitted(true);
-    } catch {
-      // Backend integration: preserve entered form values when submission fails.
-      setSubmissionError("Unable to submit the complaint. Please try again.");
-    }
-  }
 
   function handleWardLocationLookup() {
     setHasSubmitted(false);
@@ -446,6 +443,7 @@ export function ComplaintForm() {
         <CardFooter className="card-footer--enhanced">
           <Button
             type="submit"
+            onClick={() => console.log("Button clicked")}
             className="w-full sm:w-auto"
             disabled={isSubmitting}
           >

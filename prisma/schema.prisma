@@ -69,8 +69,8 @@ model Report {
   landmark  String
   phone     String?
 
-  latitude  Float
-  longitude Float
+  latitude  Float?
+  longitude Float?
 
   userId String
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { CreateReportSchema } from "@/server/validation/report.schema";
 import * as reportService from "@/server/services/report.service";
 import { ApiError } from "@/server/utils/api-error";
+import { auth } from "@/auth";
 
 export async function GET() {
   try {
@@ -22,16 +23,26 @@ export async function POST(req: NextRequest) {
 
     const data = CreateReportSchema.parse(body);
 
-    // Temporary until authentication is added
-    const userId = "temp-user-id";
+    const session = await auth();
 
-    const report = await reportService.createReport(data, userId);
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const report = await reportService.createReport(
+      data,
+      session.user.id
+    );
 
     return NextResponse.json(report, {
       status: 201,
     });
-
   } catch (error) {
+    console.error("REPORT API ERROR:", error);
+
     if (error instanceof ApiError) {
       return NextResponse.json(
         { message: error.message },
@@ -40,7 +51,12 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(
-      { message: "Invalid request" },
+      {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unknown error",
+      },
       { status: 400 }
     );
   }
