@@ -11,58 +11,40 @@ class GraphRepository:
     def close(self):
         self.session.close()
 
-    def create_complaint_node(
-        self,
-        complaint_id: str,
-        title: str,
-        description: str,
-        status: str,
-    ):
-        self.session.run(
-            """
-            MERGE (c:Complaint {id: $id})
-
-            SET
-                c.title = $title,
-                c.description = $description,
-                c.status = $status
-            """,
-            id=complaint_id,
-            title=title,
-            description=description,
-            status=status,
-        )
-
-    def create_entity_node(
+    def merge_node(
         self,
         label: str,
-        name: str,
+        node_id: str,
+        properties: dict,
     ):
         query = f"""
-        MERGE (n:{label} {{name: $name}})
+        MERGE (n:{label} {{id: $id}})
+        SET n += $properties
         """
 
         self.session.run(
             query,
-            name=name,
+            id=node_id,
+            properties=properties,
         )
 
-    def create_relationship(
+    def merge_relationship(
         self,
-        complaint_id: str,
-        entity_label: str,
-        entity_name: str,
+        from_label: str,
+        from_id: str,
         relationship: str,
+        to_label: str,
+        to_id: str,
     ):
         query = f"""
-        MATCH (c:Complaint {{id:$complaint_id}})
-        MATCH (e:{entity_label} {{name:$entity_name}})
+        MATCH (a:{from_label} {{id:$from_id}})
+        MATCH (b:{to_label} {{id:$to_id}})
 
-        MERGE (c)-[:{relationship}]->(e)
+        MERGE (a)-[:{relationship}]->(b)
         """
 
         self.session.run(
             query,
-            complaint_id=complaint_id,
-            entity_name=entity_name,
+            from_id=from_id,
+            to_id=to_id,
         )

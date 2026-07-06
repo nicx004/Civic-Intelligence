@@ -1,5 +1,7 @@
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 class Settings(BaseSettings):
     # PostgreSQL
@@ -22,7 +24,8 @@ class Settings(BaseSettings):
     embedding_model: str = "text-embedding-3-small"
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=BASE_DIR / ".env",
+        env_file_encoding = "utf-8",
         extra="ignore",
     )
 
