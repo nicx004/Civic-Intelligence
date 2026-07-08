@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     llm_model: str
 
     # Embeddings
+    ollama_url: str
     embedding_provider: str
     embedding_model: str = "text-embedding-3-small"
 

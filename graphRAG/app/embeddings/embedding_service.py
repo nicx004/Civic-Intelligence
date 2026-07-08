@@ -1,4 +1,4 @@
-from openai import OpenAI
+from ollama import Client
 
 from app.config.settings import settings
 from app.models.complaint import Complaint
@@ -8,8 +8,8 @@ from app.models.extracted_entities import ExtractedEntities
 class EmbeddingService:
 
     def __init__(self):
-        self.client = OpenAI(
-            api_key=settings.llm_api_key,
+        self.client = Client(
+            host=settings.ollama_url,
         )
 
     def embed_complaint(
@@ -23,12 +23,12 @@ class EmbeddingService:
             entities,
         )
 
-        response = self.client.embeddings.create(
+        response = self.client.embed(
             model=settings.embedding_model,
             input=text,
         )
 
-        return response.data[0].embedding
+        return response["embeddings"][0]
 
     def _build_text(
         self,
@@ -36,7 +36,7 @@ class EmbeddingService:
         entities: ExtractedEntities,
     ) -> str:
 
-        sections = [
+        parts = [
             f"Title: {complaint.title}",
             f"Description: {complaint.description}",
             f"Category: {complaint.category}",
@@ -46,23 +46,15 @@ class EmbeddingService:
         ]
 
         if entities.assets:
-            sections.append(
-                "Assets: " + ", ".join(entities.assets)
-            )
+            parts.append("Assets: " + ", ".join(entities.assets))
 
         if entities.issue_types:
-            sections.append(
-                "Issue Types: " + ", ".join(entities.issue_types)
-            )
+            parts.append("Issue Types: " + ", ".join(entities.issue_types))
 
         if entities.departments:
-            sections.append(
-                "Departments: " + ", ".join(entities.departments)
-            )
+            parts.append("Departments: " + ", ".join(entities.departments))
 
         if entities.keywords:
-            sections.append(
-                "Keywords: " + ", ".join(entities.keywords)
-            )
+            parts.append("Keywords: " + ", ".join(entities.keywords))
 
-        return "\n".join(sections)
+        return "\n".join(parts)
