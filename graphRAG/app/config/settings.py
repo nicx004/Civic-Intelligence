@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     llm_model: str
 
     # Embeddings
+    embedding_provider: str
     embedding_model: str = "text-embedding-3-small"
 
     model_config = SettingsConfigDict(

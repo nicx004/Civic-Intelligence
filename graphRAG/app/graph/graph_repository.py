@@ -48,3 +48,20 @@ class GraphRepository:
             from_id=from_id,
             to_id=to_id,
         )
+
+    def node_exists(
+        self,
+        label: str,
+        node_id: str,
+    ) -> bool:
+        query = f"""
+        MATCH (n:{label} {{id:$id}})
+        RETURN count(n) > 0 AS exists
+        """
+
+        result = self.session.run(
+            query,
+            id=node_id,
+        )
+
+        return result.single()["exists"]
