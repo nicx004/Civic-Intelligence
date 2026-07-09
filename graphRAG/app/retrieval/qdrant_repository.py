@@ -1,3 +1,5 @@
+from uuid import uuid5, NAMESPACE_URL
+
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import (
     Distance,
@@ -41,13 +43,34 @@ class QdrantRepository:
         embedding: list[float],
         payload: dict,
     ):
+        point_id = str(
+            uuid5(
+                NAMESPACE_URL,
+                f"complaint:{complaint_id}",
+            )
+        )
+
         self.client.upsert(
             collection_name=self.COLLECTION_NAME,
             points=[
                 PointStruct(
-                    id=complaint_id,
+                    id=point_id,
                     vector=embedding,
                     payload=payload,
                 )
             ],
         )
+    
+    def search(
+        self,
+        query_embedding: list[float],
+        limit: int = 5,
+    ):
+        response = self.client.query_points(
+            collection_name=self.COLLECTION_NAME,
+            query=query_embedding,
+            limit=limit,
+            with_payload=True,
+        )
+
+        return response.points

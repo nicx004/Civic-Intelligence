@@ -1,3 +1,7 @@
+from email.mime import text
+from urllib import response
+from urllib import response
+
 from ollama import Client
 
 from app.config.settings import settings
@@ -30,6 +34,18 @@ class EmbeddingService:
 
         return response["embeddings"][0]
 
+    def embed_text(
+        self,
+        text: str,
+    ) -> list[float]:
+
+        response = self.client.embed(
+            model=settings.embedding_model,
+            input=text,
+        )
+
+        return response["embeddings"][0]    
+     
     def _build_text(
         self,
         complaint: Complaint,
@@ -50,9 +66,6 @@ class EmbeddingService:
 
         if entities.issue_types:
             parts.append("Issue Types: " + ", ".join(entities.issue_types))
-
-        if entities.departments:
-            parts.append("Departments: " + ", ".join(entities.departments))
 
         if entities.keywords:
             parts.append("Keywords: " + ", ".join(entities.keywords))

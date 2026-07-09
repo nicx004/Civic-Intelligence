@@ -37,6 +37,12 @@ class Relationships:
 
     HAS_KEYWORD = "HAS_KEYWORD"
 
+    MAINTAINS = "MAINTAINS"
+
+    HAS_ISSUE = "HAS_ISSUE"
+    
+    MANAGES = "MANAGES"
+
 
 class FallbackNodeIds:
     OTHER_ASSET = "other_asset"
