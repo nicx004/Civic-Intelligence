@@ -17,7 +17,6 @@ class Settings(BaseSettings):
 
     # LLM
     llm_provider: str
-    llm_api_key: str
     llm_model: str
 
     # Embeddings

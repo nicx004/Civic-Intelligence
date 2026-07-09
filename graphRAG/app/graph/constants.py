@@ -13,6 +13,8 @@ class NodeLabels:
 
     CITIZEN = "Citizen"
 
+    ASSET = "Asset"
+
     ISSUE_TYPE = "IssueType"
 
     KEYWORD = "Keyword"
@@ -29,6 +31,14 @@ class Relationships:
 
     ASSIGNED_TO = "ASSIGNED_TO"
 
+    AFFECTS = "AFFECTS"
+
     HAS_ISSUE_TYPE = "HAS_ISSUE_TYPE"
 
     HAS_KEYWORD = "HAS_KEYWORD"
+
+
+class FallbackNodeIds:
+    OTHER_ASSET = "other_asset"
+
+    OTHER_ISSUE = "other_issue"

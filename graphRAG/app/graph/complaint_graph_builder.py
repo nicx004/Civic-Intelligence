@@ -1,3 +1,4 @@
+from app.graph.constants import NodeLabels, Relationships
 from app.graph.graph_repository import GraphRepository
 from app.models.complaint import Complaint
 from app.models.extracted_entities import ExtractedEntities
@@ -13,79 +14,56 @@ class ComplaintGraphBuilder:
         complaint: Complaint,
         entities: ExtractedEntities,
     ):
-        self._create_complaint_node(complaint)
-
-        self._connect_entities(
-        complaint.id,
-        "Category",
-        [complaint.category],
-        "BELONGS_TO",
-        "other_category",
-        )
-        self._connect_entities(
-            complaint.id,
-            "Asset",
-            entities.assets,
-            "AFFECTS",
-            "other_asset",
+        # 1. Create complaint node
+        self.repo.merge_node(
+            label=NodeLabels.COMPLAINT,
+            node_id=complaint.id,
+            properties={
+                "title": complaint.title,
+                "description": complaint.description,
+                "status": complaint.status,
+            },
         )
 
-        self._connect_entities(
-            complaint.id,
-            "IssueType",
-            entities.issue_types,
-            "HAS_ISSUE",
-            "other_issue",
-        )
+        # 2. Connect complaint to normalized Asset nodes
+        for asset_id in entities.assets:
+            self.repo.merge_relationship(
+                from_label=NodeLabels.COMPLAINT,
+                from_id=complaint.id,
+                relationship=Relationships.AFFECTS,
+                to_label=NodeLabels.ASSET,
+                to_id=asset_id,
+            )
 
-        self._connect_entities(
-            complaint.id,
-            "Department",
-            entities.departments,
-            "ASSIGNED_TO",
-            "review_required",
-        )
-
-        self._connect_dynamic_nodes(
-            complaint.id,
-            "Ward",
-            [complaint.ward],
-            "LOCATED_IN",
-        )
-
-        self._connect_dynamic_nodes(
-            complaint.id,
-            "Locality",
-            [complaint.locality],
-            "IN_LOCALITY",
-        )
-
-        self._connect_dynamic_nodes(
-            complaint.id,
-            "Landmark",
-            [complaint.landmark],
-            "NEAR",
-        )
+        # 3. Connect complaint to normalized IssueType nodes
+        for issue_id in entities.issue_types:
+            self.repo.merge_relationship(
+                from_label=NodeLabels.COMPLAINT,
+                from_id=complaint.id,
+                relationship=Relationships.HAS_ISSUE_TYPE,
+                to_label=NodeLabels.ISSUE_TYPE,
+                to_id=issue_id,
+            )
 
     def _create_complaint_node(
-    self,
-    complaint: Complaint,
-):
-    self.repo.merge_node(
-        label="Complaint",
-        node_id=complaint.id,
-        properties={
-            "id": complaint.id,
-            "title": complaint.title,
-            "description": complaint.description,
-            "status": complaint.status,
-            "user_id": complaint.user_id,
-            "latitude": complaint.latitude,
-            "longitude": complaint.longitude,
-            "created_at": complaint.created_at.isoformat(),
-            "updated_at": complaint.updated_at.isoformat(),
-        },
-    )
+        self,
+        complaint: Complaint,
+    ):
+        self.repo.merge_node(
+            label="Complaint",
+            node_id=complaint.id,
+            properties={
+                "id": complaint.id,
+                "title": complaint.title,
+                "description": complaint.description,
+                "status": complaint.status,
+                "user_id": complaint.user_id,
+                "latitude": complaint.latitude,
+                "longitude": complaint.longitude,
+                "created_at": complaint.created_at.isoformat(),
+                "updated_at": complaint.updated_at.isoformat(),
+            },
+        )
 
     def _connect_entities(
         self,
@@ -143,7 +121,35 @@ class ComplaintGraphBuilder:
                 to_label=label,
                 to_id=node_id,
             )
+    def _connect_assets(
+        self,
+        complaint: Complaint,
+        entities: ExtractedEntities,
+    ):
+        for asset_id in entities.assets:
+            self.repo.merge_relationship(
+                from_label=NodeLabels.COMPLAINT,
+                from_id=complaint.id,
+                relationship=Relationships.AFFECTS,
+                to_label=NodeLabels.ASSET,
+                to_id=asset_id,
+            )
 
+
+    def _connect_issue_types(
+        self,
+        complaint: Complaint,
+        entities: ExtractedEntities,
+    ):
+        for issue_id in entities.issue_types:
+            self.repo.merge_relationship(
+                from_label=NodeLabels.COMPLAINT,
+                from_id=complaint.id,
+                relationship=Relationships.HAS_ISSUE_TYPE,
+                to_label=NodeLabels.ISSUE_TYPE,
+                to_id=issue_id,
+            )
+            
     @staticmethod
     def _to_id(value: str) -> str:
         return (
