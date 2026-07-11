@@ -754,8 +754,14 @@ PUBLIC_HEALTH = Department(
             id="waterlogging",
             name="Waterlogging",
             aliases=[
-                "water accumulation",
+                "waterlogging",
+                "water logging",
                 "standing water",
+                "water accumulation",
+                "flood",
+                "flooding",
+                "road flooding",
+                "rainwater flooding",
             ],
         ),
 

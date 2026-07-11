@@ -7,6 +7,8 @@ from app.graph.ontology_normalizer import OntologyNormalizer
 from app.models.complaint import Complaint
 from app.models.extracted_entities import ExtractedEntities
 from app.retrieval.qdrant_repository import QdrantRepository
+from app.routing.department_router import DepartmentRouter
+
 
 
 class GraphRAGService:
@@ -17,6 +19,7 @@ class GraphRAGService:
         self.complaint_graph_builder = ComplaintGraphBuilder()
         self.embedding_service = EmbeddingService()
         self.qdrant_repository = QdrantRepository()
+        self.department_router = DepartmentRouter()
 
     def process_complaint(
         self,
@@ -25,10 +28,14 @@ class GraphRAGService:
 
         # 1. Extract human-readable semantic entities using Qwen.
         raw_entities = self.entity_extractor.extract(complaint)
+        print("\n Raw Extracted Entities:")
+        print(raw_entities)
 
         # 2. Preserve raw semantic entities for embedding.
         normalized_entities = deepcopy(raw_entities)
-
+        print("\n Normalized Entities")
+        print(normalized_entities)
+        
         # 3. Convert assets and issue types to canonical ontology IDs.
         normalized_entities = self.ontology_normalizer.normalize(
             normalized_entities
@@ -74,3 +81,44 @@ class GraphRAGService:
         )
 
         return normalized_entities
+    def retrieve(
+        self,
+        complaint_id: str,
+        limit: int = 5,
+    ) -> dict:
+
+        routing_result = self.department_router.route(
+            complaint_id=complaint_id,
+        )
+
+        stored_point = self.qdrant_repository.get_by_complaint_id(
+            complaint_id=complaint_id,
+        )
+
+        if stored_point is None:
+            raise ValueError(
+                f"Complaint '{complaint_id}' was not found in Qdrant."
+            )
+
+        similar_points = self.qdrant_repository.search(
+            query_embedding=stored_point.vector,
+            limit=limit,
+            exclude_complaint_id=complaint_id,
+        )
+
+        similar_complaints = [
+            {
+                "complaint_id": point.payload.get("complaint_id"),
+                "title": point.payload.get("title"),
+                "description": point.payload.get("description"),
+                "category": point.payload.get("category"),
+                "score": point.score,
+            }
+            for point in similar_points
+        ]
+
+        return {
+            "complaint_id": complaint_id,
+            "routing": routing_result,
+            "similar_complaints": similar_complaints,
+        }

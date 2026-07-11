@@ -1,3 +1,5 @@
+from unittest import result
+
 from neo4j import Session
 
 from app.database.neo4j import get_session
@@ -65,3 +67,42 @@ class GraphRepository:
         )
 
         return result.single()["exists"]
+
+    def find_candidate_departments(
+    self,
+    complaint_id: str,
+) -> list[dict]:
+
+        query = """
+        MATCH (c:Complaint {id: $complaint_id})
+
+        MATCH (d:Department)
+
+        OPTIONAL MATCH (c)-[:AFFECTS]->(asset:Asset)
+        WHERE (d)-[:MAINTAINS]->(asset)
+
+        WITH c, d, collect(DISTINCT asset.id) AS matched_assets
+
+        OPTIONAL MATCH (c)-[:HAS_ISSUE_TYPE]->(issue:IssueType)
+        WHERE (d)-[:HAS_ISSUE]->(issue)
+
+        WITH d,
+            matched_assets,
+            collect(DISTINCT issue.id) AS matched_issue_types
+
+        WHERE size(matched_assets) > 0
+        OR size(matched_issue_types) > 0
+
+        RETURN
+            d.id AS department_id,
+            d.name AS department_name,
+            matched_assets,
+            matched_issue_types
+        """
+
+        result = self.session.run(
+            query,
+            complaint_id=complaint_id,
+        )
+
+        return [dict(record) for record in result]
