@@ -1,4 +1,5 @@
 from copy import deepcopy
+from unittest import result
 
 from app.embeddings.embedding_service import EmbeddingService
 from app.extraction.entity_extractor import EntityExtractor
@@ -8,8 +9,8 @@ from app.models.complaint import Complaint
 from app.models.extracted_entities import ExtractedEntities
 from app.retrieval.qdrant_repository import QdrantRepository
 from app.routing.department_router import DepartmentRouter
-
-
+from app.models.graphrag_result import GraphRAGResult
+from datetime import datetime, timezone
 
 class GraphRAGService:
 
@@ -26,17 +27,10 @@ class GraphRAGService:
         complaint: Complaint,
     ) -> ExtractedEntities:
 
-        # 1. Extract human-readable semantic entities using Qwen.
         raw_entities = self.entity_extractor.extract(complaint)
-        print("\n Raw Extracted Entities:")
-        print(raw_entities)
 
-        # 2. Preserve raw semantic entities for embedding.
         normalized_entities = deepcopy(raw_entities)
-        print("\n Normalized Entities")
-        print(normalized_entities)
-        
-        # 3. Convert assets and issue types to canonical ontology IDs.
+
         normalized_entities = self.ontology_normalizer.normalize(
             normalized_entities
         )
@@ -81,6 +75,15 @@ class GraphRAGService:
         )
 
         return normalized_entities
+
+    def new_method(self, raw_entities):
+        normalized_entities = deepcopy(raw_entities)
+
+        normalized_entities = self.ontology_normalizer.normalize(
+            normalized_entities
+        )
+        
+        return normalized_entities
     def retrieve(
         self,
         complaint_id: str,
@@ -122,3 +125,76 @@ class GraphRAGService:
             "routing": routing_result,
             "similar_complaints": similar_complaints,
         }
+    
+    from app.models.graphrag_result import GraphRAGResult
+
+    def process_and_route(
+        self,
+        complaint: Complaint,
+    ) -> GraphRAGResult:
+
+        raw_entities = self.entity_extractor.extract(complaint)
+
+        normalized_entities = deepcopy(raw_entities)
+
+        normalized_entities = self.ontology_normalizer.normalize(
+            normalized_entities
+        )
+
+        self.complaint_graph_builder.build(
+            complaint=complaint,
+            entities=normalized_entities,
+        )
+
+        embedding = self.embedding_service.embed_complaint(
+            complaint=complaint,
+            entities=raw_entities,
+        )
+
+        self.qdrant_repository.create_collection(
+            vector_size=len(embedding),
+        )
+
+        payload = {
+            "complaint_id": complaint.id,
+            "title": complaint.title,
+            "description": complaint.description,
+            "category": complaint.category,
+            "status": complaint.status,
+            "ward": complaint.ward,
+            "locality": complaint.locality,
+            "landmark": complaint.landmark,
+            "assets": normalized_entities.assets,
+            "issue_types": normalized_entities.issue_types,
+            "keywords": raw_entities.keywords,
+        }
+
+        self.qdrant_repository.upsert(
+            complaint_id=complaint.id,
+            embedding=embedding,
+            payload=payload,
+        )
+
+        retrieval = self.retrieve(
+            complaint_id=complaint.id
+        )
+
+        routing = retrieval["routing"]
+
+        return GraphRAGResult(
+            complaint_id=complaint.id,
+            extracted_entities=raw_entities,
+            normalized_entities=normalized_entities,
+            assigned_department_id=routing["department_id"],
+            routing_confidence=routing["score"],
+            matched_ontology_nodes={
+                "assets": routing["matched_assets"],
+                "issue_types": routing["matched_issue_types"],
+            },
+            routing_explanation=routing,
+            similar_complaint_ids=[
+                c["complaint_id"]
+                for c in retrieval["similar_complaints"]
+            ],
+            processed_at= datetime.now(timezone.utc),
+        )

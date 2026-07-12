@@ -55,6 +55,14 @@ enum ReportCategory {
   OTHER
 }
 
+enum GraphStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+
 model Report {
   id String @id @default(cuid())
 
@@ -81,6 +89,25 @@ model Report {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  graphStatus GraphStatus @default(PENDING)
+
+  assignedDepartmentId    String?
+
+  routingConfidence     Int?
+
+  processedAt           DateTime?
+
+  extractedEntities     Json?
+
+  normalizedEntities    Json?
+
+  matchedOntologyNodes  Json?
+
+  similarComplaintIds   String[]
+
+  routingExplanation    Json?
+
 }
 
 model ReportImage {

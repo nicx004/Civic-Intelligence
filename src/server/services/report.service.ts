@@ -6,12 +6,30 @@ export async function createReport(
   data: CreateReportInput,
   userId: string
 ) {
-  // Future business logic will go here
-
-  return reportRepository.createReport({
+  const report = await reportRepository.createReport({
     ...data,
     userId,
   });
+
+  void fetch(
+  `${process.env.GRAPHRAG_API_URL}/process-report/${report.id}`,
+  {
+    method: "POST",
+  }
+)
+  .then(async (response) => {
+    if (!response.ok) {
+      console.error(
+        "GraphRAG processing failed:",
+        await response.text()
+      );
+    }
+  })
+  .catch((error) => {
+    console.error("Failed to reach GraphRAG service:", error);
+  });
+
+  return report;
 }
 
 export async function getAllReports() {
