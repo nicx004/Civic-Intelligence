@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft, Compass, FileText, MapPin } from "lucide-react";
-import { mockComplaints } from "@/lib/admin/mock-data";
+import { getAdminComplaint, getAdminComplaints, getDepartments } from "@/lib/admin/admin.repository";
 import { formatDateTime, categoryLabel } from "@/lib/admin/format";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { CategoryTag } from "@/components/admin/CategoryTag";
@@ -10,23 +10,32 @@ import { ExtractedEntities } from "@/components/admin/ExtractedEntities";
 import { SimilarComplaintList } from "@/components/admin/SimilarComplaintList";
 import { ComplaintActions } from "@/components/admin/ComplaintActions";
 
-export function generateStaticParams() {
-  return mockComplaints.map((complaint) => ({ id: complaint.id }));
-}
 
+export async function generateStaticParams() {
+  const complaints = await getAdminComplaints();
+
+  return complaints.map((complaint) => ({
+    id: complaint.id,
+  }));
+}
 export default async function ComplaintDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const complaint = mockComplaints.find((item) => item.id === id);
+
+  const [complaint, complaints, departments] = await Promise.all([
+    getAdminComplaint(id),
+    getAdminComplaints(),
+    getDepartments(),
+  ]);
 
   if (!complaint) {
     notFound();
   }
 
-  const knownIds = mockComplaints.map((item) => item.id);
+  const knownIds = complaints.map((item) => item.id);
 
   return (
     <div className="flex flex-col gap-6">
@@ -153,9 +162,13 @@ export default async function ComplaintDetailPage({
 
         {/* Sidebar: actions */}
         <div className="flex flex-col gap-6">
+          const departments = await getDepartments();
+
           <ComplaintActions
-            initialStatus={complaint.status}
-            currentDepartment={complaint.routing.departmentName}
+              complaintId={complaint.id}
+              initialStatus={complaint.status}
+              currentDepartmentId={complaint.routing.departmentId}
+              departments={departments}
           />
         </div>
       </div>

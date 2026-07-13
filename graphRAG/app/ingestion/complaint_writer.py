@@ -47,10 +47,11 @@ class ComplaintWriter:
         self,
         result: GraphRAGResult,
     ):
+        print("Saving GraphRAG result for:", result.complaint_id)
 
         with SessionLocal() as session:
 
-            session.execute(
+            update_result = session.execute(
                 text(
                     """
                     UPDATE "Report"
@@ -81,22 +82,16 @@ class ComplaintWriter:
                     "department": result.assigned_department_id,
                     "confidence": result.routing_confidence,
                     "processed_at": result.processed_at,
-
-                    "extracted_entities":
-                        Json(result.extracted_entities.model_dump()),
-
-                    "normalized_entities":
-                        Json(result.normalized_entities.model_dump()),
-
-                    "matched_nodes":
-                        Json(result.matched_ontology_nodes),
-
-                    "similar_ids":
-                        result.similar_complaint_ids,
-
-                    "routing_explanation":
-                        Json(result.routing_explanation),
+                    "extracted_entities": Json(result.extracted_entities.model_dump()),
+                    "normalized_entities": Json(result.normalized_entities.model_dump()),
+                    "matched_nodes": Json(result.matched_ontology_nodes),
+                    "similar_ids": result.similar_complaint_ids,
+                    "routing_explanation": Json(result.routing_explanation),
                 },
             )
 
+            print("Rows updated:", update_result.rowcount)
+
             session.commit()
+
+            print("GraphRAG result committed to PostgreSQL")

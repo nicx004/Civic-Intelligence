@@ -2,16 +2,11 @@ import { Clock3, TrendingUp } from "lucide-react";
 import { BarChart } from "@/components/admin/BarChart";
 import { TrendChart } from "@/components/admin/TrendChart";
 import { formatSignedPercent } from "@/lib/admin/format";
-import {
-  analyticsSummary,
-  categoryDistribution,
-  complaintsOverTime,
-  departmentLoad,
-  statusDistribution,
-  topLocalities,
-} from "@/lib/admin/mock-data";
+import { getAnalytics } from "@/lib/admin/admin.repository";
 
-export default function AnalyticsPage() {
+export default async function AnalyticsPage() {
+  const { analyticsSummary, categoryDistribution, complaintsOverTime, departmentLoad, statusDistribution, topLocalities } = await getAnalytics();
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -62,13 +57,13 @@ export default function AnalyticsPage() {
         <div className="card p-6">
           <h2 className="text-base font-semibold text-slate-900">Complaints by category</h2>
           <div className="mt-5">
-            <BarChart data={categoryDistribution.map((c) => ({ label: c.category, value: c.count }))} />
+            <BarChart data={categoryDistribution} />
           </div>
         </div>
         <div className="card p-6">
           <h2 className="text-base font-semibold text-slate-900">Complaints by department</h2>
           <div className="mt-5">
-            <BarChart data={departmentLoad.map((d) => ({ label: d.department, value: d.complaints }))} />
+            <BarChart data={departmentLoad} />
           </div>
         </div>
       </div>
@@ -77,13 +72,13 @@ export default function AnalyticsPage() {
         <div className="card p-6">
           <h2 className="text-base font-semibold text-slate-900">Status distribution</h2>
           <div className="mt-5">
-            <BarChart data={statusDistribution.map((s) => ({ label: s.status, value: s.count }))} />
+            <BarChart data={statusDistribution} />
           </div>
         </div>
         <div className="card p-6">
           <h2 className="text-base font-semibold text-slate-900">Highest complaint volume localities</h2>
           <div className="mt-5">
-            <BarChart data={topLocalities.map((l) => ({ label: l.locality, value: l.count }))} />
+            <BarChart data={topLocalities} />
           </div>
         </div>
       </div>

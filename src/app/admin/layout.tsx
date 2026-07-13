@@ -7,21 +7,17 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({
-    children,
-  }: {
-    children: React.ReactNode;
-  }) {
-    console.log("ADMIN LAYOUT LOADED");
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <AdminSidebar />
 
-    return (
-      <div className="min-h-screen bg-red-200">
-        <h1 className="text-4xl font-bold">ADMIN LAYOUT</h1>
-
-        <AdminSidebar />
-
-        <main className="px-4 pb-16 pt-6 sm:px-6 md:ml-64 md:px-8 md:pt-8">
-          <div className="mx-auto max-w-6xl">{children}</div>
-        </main>
-      </div>
-    );
+      <main className="px-4 pb-16 pt-6 sm:px-6 md:ml-64 md:px-8 md:pt-8">
+        <div className="mx-auto max-w-6xl">{children}</div>
+      </main>
+    </div>
+  );
 }

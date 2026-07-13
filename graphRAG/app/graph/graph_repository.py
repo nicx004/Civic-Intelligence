@@ -106,3 +106,28 @@ class GraphRepository:
         )
 
         return [dict(record) for record in result]
+
+    def get_departments(self) -> list[dict]:
+        query = """
+        MATCH (d:Department)
+
+        OPTIONAL MATCH (d)-[:MAINTAINS]->(a:Asset)
+
+        WITH
+            d,
+            collect(DISTINCT a.name) AS assets
+
+        OPTIONAL MATCH (d)-[:HAS_ISSUE]->(i:IssueType)
+
+        RETURN
+            d.id AS id,
+            d.name AS name,
+            assets,
+            collect(DISTINCT i.name) AS issue_types
+
+        ORDER BY d.name
+        """
+
+        result = self.session.run(query)
+
+        return [dict(record) for record in result]

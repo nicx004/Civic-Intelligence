@@ -1,40 +1,54 @@
 import Link from "next/link";
-import { AlertTriangle, CheckCircle2, ClipboardList, Clock3, MapPin, TrendingUp } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  ClipboardList,
+  Clock3,
+  MapPin,
+  TrendingUp,
+} from "lucide-react";
 import { MetricCard } from "@/components/admin/MetricCard";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { CategoryTag } from "@/components/admin/CategoryTag";
 import { BarChart } from "@/components/admin/BarChart";
-import {
-  categoryDistribution,
-  dashboardMetrics,
-  mockComplaints,
-  mockDepartments,
-} from "@/lib/admin/mock-data";
+import { getDashboardData } from "@/lib/admin/admin.repository";
 import { formatDate } from "@/lib/admin/format";
 
-export default function AdminDashboardPage() {
-  const recentComplaints = [...mockComplaints]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 5);
 
-  const needsAttention = mockComplaints
-    .filter((c) => c.status === "PENDING")
-    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-    .slice(0, 4);
+export default async function AdminDashboardPage() {
+const {
+  complaints,
+  dashboardMetrics,
+  departmentWorkload,
+  categoryDistribution,
+} = await getDashboardData();
 
-  const departmentWorkload = [...mockDepartments]
-    .sort((a, b) => b.activeComplaints + b.pendingComplaints - (a.activeComplaints + a.pendingComplaints))
-    .slice(0, 6)
-    .map((dept) => ({ label: dept.name, value: dept.activeComplaints + dept.pendingComplaints }));
+const recentComplaints = complaints
+  .slice()
+  .sort(
+    (a, b) =>
+      new Date(b.createdAt).getTime() -
+      new Date(a.createdAt).getTime()
+  )
+  .slice(0, 5);
 
-  const today = new Date().toLocaleDateString("en-IN", {
+const needsAttention = complaints
+  .filter((c) => c.status === "PENDING")
+  .sort(
+    (a, b) =>
+      new Date(a.createdAt).getTime() -
+      new Date(b.createdAt).getTime()
+  )
+  .slice(0, 4);
+
+const today = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
   });
-
-  return (
+ 
+    return (
     <div className="flex flex-col gap-8">
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -80,7 +94,6 @@ export default function AdminDashboardPage() {
           icon={CheckCircle2}
         />
       </div>
-
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Recent complaints */}
         <div className="card lg:col-span-2">
@@ -116,7 +129,6 @@ export default function AdminDashboardPage() {
           </ul>
         </div>
 
-        {/* Needs attention */}
         <div className="card">
           <div className="flex items-center gap-2 p-6 pb-4">
             <AlertTriangle className="h-4 w-4 text-amber-500" aria-hidden="true" />
@@ -151,13 +163,12 @@ export default function AdminDashboardPage() {
             <BarChart data={departmentWorkload} />
           </div>
         </div>
-
         {/* Category distribution */}
         <div className="card p-6">
           <h2 className="text-base font-semibold text-slate-900">Complaints by category</h2>
           <p className="mt-1 text-xs text-slate-500">Distribution across all recorded complaints</p>
           <div className="mt-5">
-            <BarChart data={categoryDistribution.map((c) => ({ label: c.category, value: c.count }))} />
+            <BarChart data={categoryDistribution} />
           </div>
         </div>
       </div>

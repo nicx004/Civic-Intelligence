@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException
 from app.ingestion.complaint_reader import ComplaintReader
 from app.ingestion.complaint_writer import ComplaintWriter
 from app.services.graphrag_service import GraphRAGService
+from app.services.ontology_service import OntologyService
 
 router = APIRouter()
 
@@ -11,6 +12,8 @@ router = APIRouter()
 async def health():
     return {"status": "healthy"}
 
+
+import traceback
 
 @router.post("/process-report/{report_id}")
 async def process_report(report_id: str):
@@ -41,9 +44,26 @@ async def process_report(report_id: str):
             "assigned_department": result.assigned_department_id,
         }
 
-    except Exception as e:
+    except Exception:
         writer.mark_failed(report_id)
 
+        traceback.print_exc()   # <-- prints full traceback
+
+        raise
+    
+@router.get("/ontology/departments")
+async def get_departments():
+
+    service = OntologyService()
+
+    try:
+        departments = service.get_departments()
+
+        return {
+            "departments": departments
+        }
+
+    except Exception as e:
         raise HTTPException(
             status_code=500,
             detail=str(e),

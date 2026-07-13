@@ -1,30 +1,35 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft, MapPin } from "lucide-react";
-import { mockComplaints, mockDepartments } from "@/lib/admin/mock-data";
+import {
+  getDepartment,
+  getDepartments,
+} from "@/lib/admin/admin.repository";
 import { formatDate, formatNumber } from "@/lib/admin/format";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { CategoryTag } from "@/components/admin/CategoryTag";
 
-export function generateStaticParams() {
-  return mockDepartments.map((department) => ({ id: department.id }));
-}
+export async function generateStaticParams() {
+  const departments = await getDepartments();
 
+  return departments.map((department) => ({
+    id: department.id,
+  }));
+}
 export default async function DepartmentDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const department = mockDepartments.find((item) => item.id === id);
 
-  if (!department) {
+  const data = await getDepartment(id);
+
+  if (!data) {
     notFound();
   }
 
-  const assignedComplaints = mockComplaints
-    .filter((complaint) => complaint.routing.departmentId === department.id)
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const { department, complaints: assignedComplaints } = data;
 
   const total = department.activeComplaints + department.pendingComplaints + department.resolvedComplaints;
 
@@ -67,7 +72,7 @@ export default async function DepartmentDetailPage({
           <h2 className="text-base font-semibold text-slate-900">Recently assigned complaints</h2>
           {assignedComplaints.length === 0 ? (
             <p className="mt-3 text-sm text-slate-500">
-              No complaints in the current mock dataset are assigned to this department.
+              No complaints are currently assigned to this department.
             </p>
           ) : (
             <ul className="mt-3 divide-y divide-slate-100">
