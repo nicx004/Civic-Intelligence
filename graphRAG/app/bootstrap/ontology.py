@@ -844,7 +844,7 @@ ELECTRICITY = Department(
         Asset(
             id="street-light",
             name="Street Light",
-            aliases=["streetlight", "lamp post", "light pole"]
+            aliases=["streetlight", "street lights","street light", "lamp post", "light pole"]
         ),
         Asset(
             id="electric-pole",

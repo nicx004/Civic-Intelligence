@@ -133,24 +133,35 @@ class GraphRAGService:
         complaint: Complaint,
     ) -> GraphRAGResult:
 
+        print("1. Extracting entities...")
         raw_entities = self.entity_extractor.extract(complaint)
+        print("printing raw entities:")
+        print(raw_entities)
+        print("✓ Entity extraction complete")
 
+        print("2. Normalizing...")
         normalized_entities = deepcopy(raw_entities)
+        normalized_entities = self.ontology_normalizer.normalize(normalized_entities)
+        print("Normalized entities:")
+        print(normalized_entities.assets)
+        print(normalized_entities.issue_types)
+        print("✓ Normalization complete")
 
-        normalized_entities = self.ontology_normalizer.normalize(
-            normalized_entities
-        )
-
+        print("3. Building graph...")
         self.complaint_graph_builder.build(
             complaint=complaint,
             entities=normalized_entities,
         )
+        print("✓ Graph build complete")
 
+        print("4. Generating embedding...")
         embedding = self.embedding_service.embed_complaint(
             complaint=complaint,
             entities=raw_entities,
         )
+        print(f"✓ Embedding generated ({len(embedding)} dimensions)")
 
+        print("5. Creating Qdrant collection...")
         self.qdrant_repository.create_collection(
             vector_size=len(embedding),
         )
@@ -169,17 +180,27 @@ class GraphRAGService:
             "keywords": raw_entities.keywords,
         }
 
+        print("✓ Collection ready")
+
+        print("6. Upserting vector...")
         self.qdrant_repository.upsert(
             complaint_id=complaint.id,
             embedding=embedding,
             payload=payload,
         )
+        print("✓ Upsert complete")
 
-        retrieval = self.retrieve(
-            complaint_id=complaint.id
-        )
+        print("7. Retrieving routing...")
+        retrieval = self.retrieve(complaint_id=complaint.id)
+        print(retrieval)
 
-        routing = retrieval["routing"]
+        print("8. Building result...")
+
+        routing = retrieval.get("routing")
+        if routing is None:
+            raise RuntimeError(
+                "Routing engine returned None."
+            )
 
         return GraphRAGResult(
             complaint_id=complaint.id,
