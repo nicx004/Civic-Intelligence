@@ -20,5 +20,9 @@ class GraphRAGResult:
     routing_explanation: dict[str, Any]
 
     similar_complaint_ids: list[str]
-
+    
     processed_at : datetime
+
+    candidate_departments: list[dict]
+
+    similar_complaints: list[dict]

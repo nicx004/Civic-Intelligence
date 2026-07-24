@@ -162,7 +162,7 @@ export default async function ComplaintDetailPage({
 
         {/* Sidebar: actions */}
         <div className="flex flex-col gap-6">
-          const departments = await getDepartments();
+        
 
           <ComplaintActions
               complaintId={complaint.id}

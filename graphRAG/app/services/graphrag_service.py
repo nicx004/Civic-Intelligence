@@ -76,21 +76,13 @@ class GraphRAGService:
 
         return normalized_entities
 
-    def new_method(self, raw_entities):
-        normalized_entities = deepcopy(raw_entities)
-
-        normalized_entities = self.ontology_normalizer.normalize(
-            normalized_entities
-        )
-        
-        return normalized_entities
     def retrieve(
         self,
         complaint_id: str,
         limit: int = 5,
     ) -> dict:
 
-        routing_result = self.department_router.route(
+        candidate_departments = self.department_router.route(
             complaint_id=complaint_id,
         )
 
@@ -115,18 +107,21 @@ class GraphRAGService:
                 "title": point.payload.get("title"),
                 "description": point.payload.get("description"),
                 "category": point.payload.get("category"),
-                "score": point.score,
+                "status": point.payload.get("status"),
+                "ward": point.payload.get("ward"),
+                "locality": point.payload.get("locality"),
+                "landmark": point.payload.get("landmark"),
+                "similarity": round(float(point.score), 3),
             }
             for point in similar_points
         ]
 
         return {
             "complaint_id": complaint_id,
-            "routing": routing_result,
+            "candidate_departments": candidate_departments,
             "similar_complaints": similar_complaints,
         }
     
-    from app.models.graphrag_result import GraphRAGResult
 
     def process_and_route(
         self,
@@ -191,31 +186,66 @@ class GraphRAGService:
         print("✓ Upsert complete")
 
         print("7. Retrieving routing...")
-        retrieval = self.retrieve(complaint_id=complaint.id)
-        print(retrieval)
+        retrieval = self.retrieve(
+            complaint_id=complaint.id
+        )
 
-        print("8. Building result...")
+        candidate_departments = retrieval.get(
+            "candidate_departments"
+        )
 
-        routing = retrieval.get("routing")
-        if routing is None:
+        if not candidate_departments:
             raise RuntimeError(
-                "Routing engine returned None."
+                "Routing engine returned no departments."
             )
 
+        primary_department = candidate_departments[0]
+
+        print("\nTop Candidate Departments")
+
+        for dept in candidate_departments:
+            print(
+                f"{dept['department_name']} "
+                f"({dept['confidence']}%)"
+            )
+
+
         return GraphRAGResult(
+    
+
             complaint_id=complaint.id,
+
             extracted_entities=raw_entities,
+
             normalized_entities=normalized_entities,
-            assigned_department_id=routing["department_id"],
-            routing_confidence=routing["score"],
+
+            assigned_department_id=
+                primary_department["department_id"],
+
+            routing_confidence=
+                primary_department["confidence"],
+
             matched_ontology_nodes={
-                "assets": routing["matched_assets"],
-                "issue_types": routing["matched_issue_types"],
+                "assets":
+                    primary_department["matched_assets"],
+
+                "issue_types":
+                    primary_department["matched_issue_types"],
             },
-            routing_explanation=routing,
+
+            routing_explanation={
+                "primary_department": primary_department,
+                "candidate_departments": candidate_departments,
+            },
+            
             similar_complaint_ids=[
                 c["complaint_id"]
                 for c in retrieval["similar_complaints"]
             ],
-            processed_at= datetime.now(timezone.utc),
+            
+            similar_complaints=retrieval["similar_complaints"],
+
+            processed_at=datetime.now(timezone.utc),
+
+            candidate_departments=candidate_departments,
         )

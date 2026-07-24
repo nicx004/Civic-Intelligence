@@ -18,6 +18,14 @@ export type ComplaintCategory =
 
 export type ComplaintStatus = "PENDING" | "VERIFIED" | "REJECTED" | "RESOLVED";
 
+export interface CandidateDepartment {
+    departmentId: string;
+    departmentName: string;
+    confidence: number;
+
+    matchedAssets: string[];
+    matchedIssueTypes: string[];
+}
 export interface RoutingResult {
   departmentId: string;
   departmentName: string;
@@ -26,6 +34,8 @@ export interface RoutingResult {
   matchedIssueTypes: string[];
   score: number;
   explanation: string;
+
+  candidateDepartments: CandidateDepartment[];
 }
 
 export interface ExtractedEntities {

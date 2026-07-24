@@ -72,7 +72,11 @@ class ComplaintWriter:
 
                         "similarComplaintIds" = :similar_ids,
 
-                        "routingExplanation" = :routing_explanation
+                        "similarComplaints" = :similar_complaints,
+
+                        "routingExplanation" = :routing_explanation,
+
+                        "candidateDepartments" = :candidate_departments.
 
                     WHERE id = :complaint_id
                     """
@@ -87,6 +91,8 @@ class ComplaintWriter:
                     "matched_nodes": Json(result.matched_ontology_nodes),
                     "similar_ids": result.similar_complaint_ids,
                     "routing_explanation": Json(result.routing_explanation),
+                    "candidate_departments": Json(result.candidate_departments),
+                    "similar_complaints": Json(result.similar_complaints),
                 },
             )
 

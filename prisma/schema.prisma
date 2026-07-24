@@ -106,7 +106,11 @@ model Report {
 
   similarComplaintIds   String[]
 
+  similarComplaints     Json?
+
   routingExplanation    Json?
+
+  candidateDepartments  Json?
 
 }
 
