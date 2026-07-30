@@ -76,7 +76,7 @@ class ComplaintWriter:
 
                         "routingExplanation" = :routing_explanation,
 
-                        "candidateDepartments" = :candidate_departments.
+                        "candidateDepartments" = :candidate_departments
 
                     WHERE id = :complaint_id
                     """
