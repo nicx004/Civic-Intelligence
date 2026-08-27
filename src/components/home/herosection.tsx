@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 via-white to-white">
@@ -33,9 +35,12 @@ export default function HeroSection() {
               Report an Issue
             </a>
 
-            <button className="rounded-xl border border-slate-300 bg-white px-6 py-3 font-medium shadow-sm transition hover:bg-slate-50">
+            <Link
+              href="/how-it-works"
+              className="rounded-xl border border-slate-300 bg-white px-6 py-3 font-medium shadow-sm transition hover:bg-slate-50"
+            >
               How It Works
-            </button>
+            </Link>
           </div>
 
           <div className="mt-10 flex items-center gap-4">

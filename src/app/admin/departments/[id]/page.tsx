@@ -1,21 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft, MapPin } from "lucide-react";
-import {
-  getDepartment,
-  getDepartments,
-} from "@/lib/admin/admin.repository";
 import { formatDate, formatNumber } from "@/lib/admin/format";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { CategoryTag } from "@/components/admin/CategoryTag";
+import { getDepartment } from "@/lib/admin/admin.repository";
 
-export async function generateStaticParams() {
-  const departments = await getDepartments();
+export const dynamic = "force-dynamic";
 
-  return departments.map((department) => ({
-    id: department.id,
-  }));
-}
 export default async function DepartmentDetailPage({
   params,
 }: {

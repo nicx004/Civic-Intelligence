@@ -45,7 +45,7 @@ export default async function Header() {
           </Link>
 
           <Link
-            href="#how-it-works"
+            href="/how-it-works"
             className="font-medium text-slate-600 transition hover:text-teal-600"
           >
             How It Works

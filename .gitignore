@@ -16,6 +16,9 @@ coverage/
 # Environment variables (Never commit secrets)
 .env
 .env.local
+.env.*
+frontend.env
+!.env.example
 .env.development.local
 .env.production.local
 

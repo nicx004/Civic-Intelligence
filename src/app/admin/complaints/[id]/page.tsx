@@ -10,14 +10,8 @@ import { ExtractedEntities } from "@/components/admin/ExtractedEntities";
 import { SimilarComplaintList } from "@/components/admin/SimilarComplaintList";
 import { ComplaintActions } from "@/components/admin/ComplaintActions";
 
+export const dynamic = "force-dynamic";
 
-export async function generateStaticParams() {
-  const complaints = await getAdminComplaints();
-
-  return complaints.map((complaint) => ({
-    id: complaint.id,
-  }));
-}
 export default async function ComplaintDetailPage({
   params,
 }: {

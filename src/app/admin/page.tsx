@@ -14,6 +14,8 @@ import { BarChart } from "@/components/admin/BarChart";
 import { getDashboardData } from "@/lib/admin/admin.repository";
 import { formatDate } from "@/lib/admin/format";
 
+export const dynamic = "force-dynamic";
+
 
 export default async function AdminDashboardPage() {
 const {

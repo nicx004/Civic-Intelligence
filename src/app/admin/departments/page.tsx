@@ -1,6 +1,6 @@
 import { getDepartments } from "@/lib/admin/admin.repository";
 import { DepartmentCard } from "@/components/admin/DepartmentCard";
-
+export const dynamic = "force-dynamic";
 export default async function DepartmentsPage() {
   const departments = await getDepartments();
   const totalActive = departments.reduce((sum, d) => sum + d.activeComplaints, 0);

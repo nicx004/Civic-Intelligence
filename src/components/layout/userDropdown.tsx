@@ -88,7 +88,7 @@ export default function UserDropdown({
                 My Reports
             </Link>
 
-            <div classname = "my-2 border-t border-slate-200"></div>
+            <div className = "my-2 border-t border-slate-200"></div>
 
             <form
                 action={async () => {

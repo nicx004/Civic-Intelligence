@@ -1,15 +1,21 @@
 import Link from "next/link";
-import type { Prisma } from "@prisma/client";
+import type { Report } from "@prisma/client";
 
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { formatDateTime } from "@/lib/admin/format";
 
+
 type ReportDetailsProps = {
-  report: Prisma.ReportGetPayload<{
-    include: {
-      images: true;
-    };
-  }>;
+  report: {
+    title: string;
+    createdAt: Date;
+    status: Report["status"];
+    description: string;
+    ward: string;
+    locality: string | null;
+    landmark: string | null;
+    assignedDepartmentId: string | null;
+  };
 };
 
 export default function ReportDetails({
