@@ -307,3 +307,33 @@ Potential areas for further development include:
 **Live Application:** [civic.nicx.live](https://civic.nicx.live)
 
 Civic Intelligence is an end-to-end civic technology prototype exploring the use of GraphRAG, knowledge graphs, and semantic retrieval to support municipal complaint management.
+
+## Important: Deployment and Local Execution
+
+**The public demo and a local installation have different runtime requirements.**
+
+The live application at [civic.nicx.live](https://civic.nicx.live) is exposed through Cloudflare Tunnel and depends on the host machine and services running in the existing deployment environment. It is not an independently hosted, always-on cloud deployment.
+
+Developers who want to run their own instance should clone the repository and configure the required local services and environment variables.
+
+### Requirements for a Local Instance
+
+* **Frontend:** Next.js application running in the local environment.
+* **Backend:** FastAPI-based GraphRAG service.
+* **Database:** PostgreSQL for persistent application data.
+* **Knowledge graph:** Neo4j for civic relationships and departmental routing.
+* **Vector database:** Qdrant for semantic retrieval.
+* **AI inference:** Ollama with the required language model and embedding model.
+
+Docker is used to manage the application's containerized services.
+
+### Important Notes
+
+* Accessing the public demo does not install the project or its dependencies on your computer.
+* A separate local installation requires the relevant services, credentials, environment variables, and model dependencies to be configured.
+* The local backend and supporting services must be running for features that depend on them to work.
+* The public demo's availability depends on the existing deployment environment remaining operational.
+* Local startup commands should be followed according to the configuration files and instructions in this repository.
+
+For local development, begin with the [repository](https://github.com/nicx004/Civic-Intelligence) and review the setup instructions below.
+   
